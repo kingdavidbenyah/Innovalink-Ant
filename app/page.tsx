@@ -1,12 +1,8 @@
 "use client";
-import Image from "next/image";
-import toggleTheme from "@/utils/theme-toggle";
-import { use } from "react";
 import { useEffect } from "react";
 import { gsap } from "gsap";
-import { FaSun } from "react-icons/fa";
-import IconButton from "./components/iconButton";
-import ArrowUpRight from "./components/arrow-up-right.svg";
+import IconButton from "../components/iconButton";
+import ArrowUpRight from "../components/arrow-up-right.svg";
 
 export default function Home() {
   useEffect(() => {

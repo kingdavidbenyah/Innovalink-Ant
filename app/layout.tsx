@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/navbar";
+import Navbar from "../components/navbar";
 import { ThemeProvider } from "@/utils/ThemeContext";
 
 const mona_Sans = Mona_Sans({
