@@ -25,17 +25,16 @@ export default function Home() {
   };
 
   // Pause and reset video whenever Who We Are section becomes invisible
-useEffect(() => {
-  const video = videoRef.current;
-  if (!video) return;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-  if (!whoWeAreVisible) {
-    video.pause();
-    video.currentTime = 0;
-    setIsPlaying(false);
-  }
-}, [whoWeAreVisible]);
-
+    if (!whoWeAreVisible) {
+      video.pause();
+      video.currentTime = 0;
+      setIsPlaying(false);
+    }
+  }, [whoWeAreVisible]);
 
   useEffect(() => {
     // Main cinematic timeline
@@ -148,7 +147,6 @@ useEffect(() => {
       },
     });
 
-    
     // Animate elements in the Who We Are section when the hero section is almost out of view
     ScrollTrigger.create({
       trigger: ".hero-section",
@@ -206,10 +204,18 @@ useEffect(() => {
   }, []);
 
   return (
-    <>
-      <div className="bg-white dark:bg-black h-screen w-full py-52 ">
-        <div className=" mx-auto flex flex-col items-center gap-4 max-w-[583px] justify-center">
-          <h3 className="text-primary-6 tracking-[22.2px] text-xl font-light dark:text-neutral-0">
+    <div className="sections-container relative h-screen overflow-hidden dark:bg-black  text-white">
+      {/* HERO SECTION */}
+      <section
+        ref={heroSectionRef}
+        className="hero-section absolute inset-0 flex flex-col items-center  pt-36"
+        style={{
+          zIndex: whoWeAreVisible ? 0 : 20,
+          pointerEvents: whoWeAreVisible ? "none" : "auto",
+        }}
+      >
+        <div className="mx-auto flex flex-col items-center gap-4 max-w-[583px] justify-center">
+          <h3 className="text-primary-6 tracking-[22.2px] text-xl font-light dark:text-neutral-0 hero-heading">
             INOVALINK WEBSITE
           </h3>
           <h1 className="dark:text-neutral-0 text-neutral-6 items-center flex flex-col text-9xl font-bold coming-soon">
@@ -260,7 +266,7 @@ useEffect(() => {
             />
           </div>
         </div>
-      </div>
+      </section>
       <div
         className="max-w-[81px] flex flex-col items-center text-center gap-1.5 bottom-[60px] absolute place-self-center scroll-to-view-more"
         style={{
@@ -358,6 +364,6 @@ useEffect(() => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
