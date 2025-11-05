@@ -10,6 +10,8 @@ import { gsap } from "gsap";
 
 export default function Navbar() {
   const { theme } = useTheme(); // Access the theme from the context
+    const [isContactModalOpened, setIsContactModalOpened] = useState(false);
+
 
   return (
     <>

@@ -11,10 +11,8 @@ interface WaitlistModalProps {
 const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
   const [waitlist, setWaitlist] = useState<{
     count: number;
-    initials: string[];
   }>({
     count: 0,
-    initials: [],
   });
 
   useEffect(() => {
@@ -23,23 +21,10 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
       const res = await fetch("/api/waitlist");
       const data = await res.json();
       if (data.success)
-        setWaitlist({ count: data.count, initials: data.initials });
+        setWaitlist({ count: data.count });
     };
     fetchData();
   }, []);
-
-  const getRandomColor = () => {
-    const colors = [
-      "#16a34a",
-      "#2563eb",
-      "#d97706",
-      "#dc2626",
-      "#7c3aed",
-      "#0891b2",
-      "#4ade80",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
 
   const dummyImages = [
     "https://i.pinimg.com/1200x/b9/af/d2/b9afd2925b48ae6891138f8b4de78413.jpg",
