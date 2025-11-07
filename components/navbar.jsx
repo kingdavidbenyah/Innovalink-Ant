@@ -3,22 +3,15 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import SunButton from "./sunButton";
 import Button from "./button";
+import { useState } from "react";
 import { useTheme } from "@/utils/ThemeContext";
+import ContactModal from "./ui/contactModal";
 import { gsap } from "gsap";
 
 export default function Navbar() {
   const { theme } = useTheme(); // Access the theme from the context
+    const [isContactModalOpened, setIsContactModalOpened] = useState(false);
 
-  useEffect(() => {
-    // Animate the navbar sliding down on page load
-    gsap.from("nav", {
-      y: -100,
-      opacity: 0,
-      duration: 1,
-      ease: "power2.out",
-      delay: 0.6,
-    });
-  }, []);
 
   return (
     <>
@@ -38,12 +31,18 @@ export default function Navbar() {
           <div className="flex gap-5 items-center">
             <SunButton />
             <Button
+              onClick={() => setIsContactModalOpened(true)}
               text="Contact"
               className=" bg-primary-5 text-foundation-white dark:text-foundation-black dark:bg-neutral-0"
             />
           </div>
+          <ContactModal
+            isOpen={isContactModalOpened}
+            onClose={() => setIsContactModalOpened(false)}
+          />
         </div>
       </nav>
     </>
   );
 }
+ 

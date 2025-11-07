@@ -46,6 +46,12 @@
   --color-success-6: #08A30C;
 }
 
+@layer utilities{
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 
 
 /* Hide scrollbar for Chrome, Safari, and Opera */

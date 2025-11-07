@@ -96,13 +96,11 @@ export async function GET() {
       select: { email: true },
     });
 
-    const initials = emails.map((item) => item.email[0].toUpperCase());
     const count = emails.length;
 
     return NextResponse.json({
       success: true,
       count,
-      initials,
     });
   } catch (error) {
     console.error(error);
