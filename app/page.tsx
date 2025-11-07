@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import IconButton from "../components/button+icon";
 import ArrowUpRight from "../components/arrow-up-right.svg";
 import Image from "next/image";
+import WaitlistModal from "@/components/ui/waitlistModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,53 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [whoWeAreVisible, setWhoWeAreVisible] = useState(false);
+  const [isWaitlistModalOpened, setIsWaitlistModalOpened] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: string; text: string }>({
+    type: "",
+    text: "",
+  });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage({ type: "success", text: data.message });
+        setEmail("");
+
+        setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, 5000);
+
+        setIsWaitlistModalOpened(true);
+      } else {
+        setMessage({ type: "error", text: data.message });
+          setTimeout(() => {
+          setMessage({ type: "", text: "" });
+        }, 15000);
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePlay = () => {
     const video = videoRef.current;
@@ -197,7 +245,7 @@ export default function Home() {
           <h3 className="text-primary-6 tracking-[22.2px] text-xl font-light dark:text-neutral-0 hero-heading">
             INOVALINK WEBSITE
           </h3>
-          <h1 className="dark:text-neutral-0 text-neutral-6 items-center flex flex-col text-9xl font-bold coming-soon">
+          <h1 className="dark:text-neutral-0 text-neutral-6 items-center flex flex-col text-8xl font-bold coming-soon">
             <span className="flex">
               <span>C</span>
               <div
@@ -222,24 +270,41 @@ export default function Home() {
             Something bold, beautiful, and transformative is on the horizon.{" "}
             <span className="text-primary-5 font-bold">Stay close.</span>
           </p>
-
-          <div className="pt-2.5 flex gap-1 hero-input-group">
-            <input
-              className="border rounded-[42px] py-2.5 px-7 placeholder:text-[13px] text-neutral-4 dark:border-[#3f3f3f] border-neutral-4 w-[292px]"
-              placeholder="Enter your email"
-              type="email"
-              name="email"
-            />
-            <IconButton
-              text="Join the Waitlist"
-              icon={<ArrowUpRight className="w-4 text-white" />}
-              onClick={() => alert("Button clicked!")}
-              className="bg-primary-6 text-white"
-              style={{
-                background: "linear-gradient(90deg, #09C00E 0%, #045A07 100%)",
-                boxShadow: "0 1px 2px 0 rgba(10, 13, 18, 0.05)",
-              }}
-            />
+          <div className="pt-2.5 hero-input-group space-y-1">
+            <form onSubmit={handleSubmit} className=" flex gap-1 ">
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                disabled={loading}
+                className={`border rounded-[42px] py-2.5 px-5 placeholder:text-sm text-neutral-4  ${message.type === "error"? "border-error-5" : "dark:border-[#3f3f3f] border-neutral-4 w-[292px]"}`}
+              />
+              <IconButton
+                type="submit"
+                disabled={loading}
+                text={loading ? "Joining..." : "Join the Waitlist"}
+                icon={!loading && <ArrowUpRight className="w-4 text-white" />}
+                className="bg-primary-6 text-white"
+                style={{
+                  background: "linear-gradient(90deg, #09C00E 0%, #045A07 100%)",
+                  boxShadow: "0 1px 2px 0 rgba(10, 13, 18, 0.05)",
+                }}
+              />
+            </form>
+            <p
+              className={`mt-2 px-6 text-sm min-h-5 ${
+                message.text
+                  ? message.type === "success"
+                    ? "text-green-500"
+                    : "text-red-500"
+                  : ""
+              }`}
+            >
+              {message.text}
+            </p>
           </div>
         </div>
       </section>
@@ -335,6 +400,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+            <WaitlistModal
+              isOpen={isWaitlistModalOpened}
+              onClose={() => setIsWaitlistModalOpened(false)}
+            />
     </div>
   );
 }

@@ -9,15 +9,19 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   showCloseButton?: boolean;
-  modalClassName?: string;
+  modalClassName?: string
+  bgClassName?: string;
+  closeClassName?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({
+const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
   showCloseButton = true,
   modalClassName,
+  bgClassName,
+  closeClassName
 }) => {
   // Close modal on ESC key press
   useEffect(() => {
@@ -69,7 +73,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 overflow-hidden">
+        <div className={`min-w-[320px] fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden ${bgClassName}`}>
           {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -77,7 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 w-[125%] h-[125%] bg-black/50 dark:bg-black/65 backdrop-blur-[6px] -z-10"
+            className="fixed inset-0 bg-black/50 dark:bg-black/65 backdrop-blur-[6px]"
           />
 
           {/* Modal */}
@@ -87,23 +91,25 @@ export const Modal: React.FC<ModalProps> = ({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full max-h-[95vh] bg-neutral-1 dark:bg-neutral-6 rounded-[28px] border border-ne z-10 flex flex-col ${modalClassName}`}
+            className={`relative w-full max-h-[95vh] bg-neutral-1 dark:bg-neutral-7 rounded-[28px] z-10 flex flex-col ${modalClassName}`}
           >
             {/* Close Button */}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="absolute -top-2 -right-2 bg-neutral-6 border border-neutral-7 p-2 rounded-full transition-colors"
+                className={`${closeClassName} cursor-pointer absolute -top-2.5 -right-2.5 bg-neutral-1 hover:bg-neutral-2 dark:bg-neutral-6 dark:hover:bg-neutral-5 border border-neutral-4 dark:border-neutral-7 p-2  rounded-full transition-colors`}
                 aria-label="Close Modal"
               >
-                <X className="w-2.5 h-2.5 text-neutral-0" />
+                <X className="w-4 h-4 text-neutral-4 dark:text-neutral-0" />
               </button>
             )}
             {/* Content */}
-            <div className="flex-1 p-4 sm:p-6">{children}</div>
+            <div className="flex-1">{children}</div>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
   );
 };
+
+export default Modal;
