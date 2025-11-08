@@ -17,11 +17,13 @@ interface ContactEmailProps {
   subject: string;
   projectDetails: string;
   contactType: string;
-  attachment?: {
+  attachments?: {
     filename: string;
     buffer: Buffer;
-  };
+  }[];
 }
+
+
 
 // Send contact form email
 export async function sendContactEmail({
@@ -30,7 +32,7 @@ export async function sendContactEmail({
   subject,
   projectDetails,
   contactType,
-  attachment,
+  attachments,
 }: ContactEmailProps) {
   const mailOptions: nodemailer.SendMailOptions = {
     from: process.env.EMAIL_FROM,
@@ -82,11 +84,11 @@ export async function sendContactEmail({
                 )}</div>
               </div>
               ${
-                attachment
+                attachments && attachments.length
                   ? `
               <div class="field">
-                <div class="label">Attachment:</div>
-                <div class="value">✓ File attached: ${attachment.filename}</div>
+                <div class="label">Attachments:</div>
+                <div class="value">✓ ${attachments.length} file(s) attached</div>
               </div>
               `
                   : ""
@@ -102,13 +104,11 @@ export async function sendContactEmail({
   };
 
   // Add attachment if present
-  if (attachment) {
-    mailOptions.attachments = [
-      {
-        filename: attachment.filename,
-        content: attachment.buffer,
-      },
-    ];
+  if (attachments && attachments.length > 0) {
+    mailOptions.attachments = attachments.map((file) => ({
+      filename: file.filename,
+      content: file.buffer,
+    }));
   }
 
   await transporter.sendMail(mailOptions);

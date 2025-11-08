@@ -12,8 +12,8 @@ const ALLOWED_TYPES = [
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "image/jpeg",
   "image/jpg",
+  "image/jpeg",
   "image/png",
 ];
 
@@ -27,7 +27,6 @@ export async function POST(request: Request) {
     const subject = formData.get("subject") as string;
     const projectDetails = formData.get("projectDetails") as string;
     const contactType = formData.get("contactType") as string;
-    const file = formData.get("attachment") as File | null;
 
     // Validate required fields
     if (!fullName || !email || !subject || !projectDetails || !contactType) {
@@ -37,8 +36,7 @@ export async function POST(request: Request) {
       );
     }
 
-
-
+    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -47,6 +45,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate domain
     const domain = email.split("@")[1].toLowerCase();
     const allowedDomains = [
       "gmail.com",
@@ -80,61 +79,70 @@ export async function POST(request: Request) {
       );
     }
 
-    let attachment: { filename: string; buffer: Buffer } | undefined =
-      undefined;
+    // Handle attachments (up to 3)
+    const files = formData.getAll("attachments") as File[];
+    if (files.length > 3) {
+      return NextResponse.json(
+        { success: false, message: "You can upload up to 3 files only." },
+        { status: 400 }
+      );
+    }
 
-    // Process file if present
-    if (file && file.size > 0) {
-      // Validate file size
+    const validAttachments = [];
+    for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
         return NextResponse.json(
-          { success: false, message: "File size must be less than 25MB" },
+          { success: false, message: `${file.name} exceeds 25MB limit.` },
           { status: 400 }
         );
       }
-
-      // Validate file type
       if (!ALLOWED_TYPES.includes(file.type)) {
         return NextResponse.json(
           {
             success: false,
-            message: "Invalid file type. Allowed: PDF, PPT, XLS, JPG",
+            message: `${file.name} is not an allowed file type. Allowed: PDF, PPT, XLS, JPG, PNG`,
           },
           { status: 400 }
         );
       }
 
-      // Convert file to buffer for email attachment
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
-      attachment = {
+      validAttachments.push({
         filename: file.name,
-        buffer: buffer,
-      };
+        buffer,
+        size: file.size,
+        mimeType: file.type,
+      });
     }
 
-    // Save to database
-    await prisma.contactSubmission.create({
+    // Save submission + attachment metadata to DB
+    const submission = await prisma.contactSubmission.create({
       data: {
         fullName,
         email: email.toLowerCase(),
         subject,
         projectDetails,
         contactType: contactType.toUpperCase() as "INDIVIDUAL" | "BUSINESS",
-        hasAttachment: !!attachment,
-        attachmentName: attachment?.filename || null,
+        hasAttachment: validAttachments.length > 0,
+        attachments: {
+          create: validAttachments.map((f) => ({
+            name: f.filename,
+            size: f.size,
+            mimeType: f.mimeType,
+          })),
+        },
       },
     });
 
-    // Send email to admin
+    // Send email with attachments
     await sendContactEmail({
       fullName,
       email,
       subject,
       projectDetails,
       contactType,
-      attachment,
+      attachments: validAttachments, // array of files
     });
 
     return NextResponse.json(

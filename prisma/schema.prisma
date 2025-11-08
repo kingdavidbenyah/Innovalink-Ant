@@ -20,16 +20,29 @@ model WaitlistUser {
   @@map("waitlist_users")
 }
 
+
 model ContactSubmission {
-  id              Int      @id @default(autoincrement())
-  fullName        String   @map("full_name")
+  id              Int              @id @default(autoincrement())
+  fullName        String           @map("full_name")
   email           String
   subject         String
-  projectDetails  String   @db.Text @map("project_details")
-  contactType     ContactType @map("contact_type")
-  hasAttachment   Boolean  @default(false) @map("has_attachment")
-  attachmentName  String?  @map("attachment_name")
-  createdAt       DateTime @default(now()) @map("created_at")
-  
+  projectDetails  String           @db.Text @map("project_details")
+  contactType     ContactType      @map("contact_type")
+  hasAttachment   Boolean          @default(false) @map("has_attachment")
+  createdAt       DateTime         @default(now()) @map("created_at")
+
+  attachments     Attachment[]     // 👈 relation to multiple files
+
   @@map("contact_submissions")
+}
+
+model Attachment {
+  id           Int      @id @default(autoincrement())
+  name         String
+  size         Int
+  mimeType     String
+  submissionId Int
+  submission   ContactSubmission @relation(fields: [submissionId], references: [id])
+
+  @@map("attachments")
 }

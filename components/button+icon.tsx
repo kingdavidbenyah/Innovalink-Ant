@@ -22,7 +22,7 @@ export default function ButtonPlusIcon({
   return (
     <button
       type={type}
-      className={`${className} rounded-[40px] cursor-pointer text-sm px-5 py-3 border border-transparent flex items-center `}
+      className={`${className} rounded-[40px] cursor-pointer text-sm px-5 py-3 flex items-center `}
       style={style}
       onClick={onClick}
     >
