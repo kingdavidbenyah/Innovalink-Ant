@@ -1,23 +1,24 @@
 "use client";
 import IconButton from "./iconButton";
 import gsap from "gsap";
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function footer() {
-    useEffect(() => {
-        // Animate the navbar sliding down on page load
-        gsap.from("footer", {
-          y: 100,
-          opacity: 0,
-          duration: 1,
-          ease: "power2.out",
-          delay: 0.6,
-        });
-      }, []);
+  useEffect(() => {
+    // Animate the navbar sliding down on page load
+    gsap.from("footer", {
+      y: 100,
+      opacity: 0,
+      duration: 1,
+      ease: "power2.out",
+      delay: 0.6,
+    });
+  }, []);
   return (
     <>
       {/* <nav className="fixed bg-transparent px-4 w-full top-0"></nav> */}
-      <footer className="footer fixed bg-transparent px-4 w-full hidden md:block bottom-[54px]">
+      <footer className="footer fixed bg-transparent px-4 w-full block bottom-[54px]">
         <div className="  w-full max-w-7xl place-self-center items-center flex justify-between">
           <div className="flex flex-row gap-1 pl-8 items-center dark:text-neutral-0 text-neutral-5">
             <svg
@@ -35,23 +36,43 @@ export default function footer() {
             <p className="dark:text-neutral-0 text-neutral-5  ">2025</p>
             <div className="w-[48.5px] dark:bg-primary-0 h-[0.5px] bg-neutral-5 animate-pulse transition  " />
           </div>
-          <div className="flex flex-row gap-2  pr-8 ">
-          <IconButton
-              image={"/mail.svg"}
-              href={"https://www.linkedin.com/company/innovalink-ant/"}
-              alt={"LinkedIn Logo"}
-              className={"w-3.5 h-3.5 "}
-            />
-            <IconButton
-              image={"/linkedin.svg"}
-              href={"https://www.linkedin.com/company/innovalink-ant/"}
-              alt={"LinkedIn Logo"}
-              className={"w-[11.2px] h-[11.2px] "}
-
-            />
-          
+          <div className="flex flex-col md:flex-row gap-2  pr-8 ">
+            <Link  href="mailto:inovalink.net.tech@gmail.com">
+              <div className="w-7  h-7 items-center flex justify-center cursor-pointer group hover:bg-neutral-4 hover:scale-125 hover:border-neutral-4 transition-all duration-300 rounded-full border border-neutral-7 bg-neutral-7">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="10"
+                  viewBox="0 0 12 10"
+                  fill="none"
+                  className=" text-neutral-4 group-hover:text-neutral-7 transition-all duration-300"
+                >
+                  <path
+                    d="M1.16667 9.33333C0.845833 9.33333 0.571278 9.21919 0.343 8.99092C0.114722 8.76264 0.000388889 8.48789 0 8.16667V1.16667C0 0.845833 0.114333 0.571278 0.343 0.343C0.571667 0.114722 0.846222 0.000388889 1.16667 0H10.5C10.8208 0 11.0956 0.114333 11.3242 0.343C11.5529 0.571667 11.6671 0.846222 11.6667 1.16667V8.16667C11.6667 8.4875 11.5525 8.76225 11.3242 8.99092C11.096 9.21958 10.8212 9.33372 10.5 9.33333H1.16667ZM5.83333 5.25L1.16667 2.33333V8.16667H10.5V2.33333L5.83333 5.25ZM5.83333 4.08333L10.5 1.16667H1.16667L5.83333 4.08333ZM1.16667 2.33333V1.16667V8.16667V2.33333Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+            </Link>
+            <Link target="_blank" href="https://www.linkedin.com/posts/inovalink-solution_inovalink-solution-linkedin-activity-7393027418736807937-p7F5?utm_source=share&utm_medium=member_ios&rcm=ACoAADgBfCYB9dPnS2rkSe1TxtxnFBc6FH4rlgg">
+              <div className="w-7  h-7 items-center flex justify-center cursor-pointer group hover:bg-neutral-4 hover:scale-125 hover:border-neutral-4 transition-all duration-300 rounded-full border border-neutral-7 bg-neutral-7">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  className=" text-neutral-4 group-hover:text-neutral-7 transition-all duration-300"
+                >
+                  <path
+                    d="M3.23874 2.33334C3.23861 2.58087 3.14016 2.81822 2.96504 2.99317C2.78992 3.16811 2.55247 3.26633 2.30494 3.2662C2.0574 3.26608 1.82005 3.16763 1.64511 2.99251C1.47016 2.81738 1.37195 2.57994 1.37207 2.3324C1.37219 2.08487 1.47065 1.84752 1.64577 1.67257C1.82089 1.49763 2.05834 1.39941 2.30587 1.39954C2.55341 1.39966 2.79075 1.49811 2.9657 1.67323C3.14065 1.84835 3.23886 2.0858 3.23874 2.33334ZM3.26674 3.95733H1.40007V9.8H3.26674V3.95733ZM6.21607 3.95733H4.35874V9.8H6.1974V6.734C6.1974 5.026 8.4234 4.86733 8.4234 6.734V9.8H10.2667V6.09933C10.2667 3.22 6.97207 3.32734 6.1974 4.74133L6.21607 3.95733Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+            </Link>
+           
           </div>
-
         </div>
       </footer>
     </>

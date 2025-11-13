@@ -3,7 +3,8 @@ import Image from "next/image";
 import { useTheme } from "@/utils/ThemeContext";
 
 export default function SunButton() {
-  const { toggleTheme } = useTheme(); // Access the toggleTheme function from the context
+  const { toggleTheme, theme } = useTheme();
+   // Access the toggleTheme function from the context
 
   return (
     <button
@@ -12,7 +13,7 @@ export default function SunButton() {
     >
       <Image
         className="w-4.5 h-4.5"
-        src="/sun.svg"
+        src={theme==="dark" ? "/sun.svg" : "/moon.svg"}
         alt="sun"
         width="1920"
         height="1080"
